@@ -4,11 +4,16 @@ function [data] = parameter4analysis(inputDay, inputArea, HR)
 
 class_name = get_class_name(inputDay, HR);  % get class name from input day
 para_class = eval(class_name);              % initialise class with paramters
+<<<<<<< HEAD
+=======
+files = get_mat_files(para_class.Path);     % get directory of all files
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 
 data.area_info = get_area_info(inputArea, para_class, HR);
 data.area_info.day = inputDay;
 data.area_info.area = inputArea;
 
+<<<<<<< HEAD
 
 if isprop(para_class, 'Path_hdf5')
     "true"
@@ -27,6 +32,11 @@ h
 unique(h)
 T
 unique(T)
+=======
+[h,t,ne,Te,Ti,vi,dne,dTe,dTi,dvi,az,el,T] = ...
+    guisdap_param2cell2regular(files,...
+    [data.area_info.time(1,:); data.area_info.time(2,:)]);
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 
 [data.nel, data.altitude] = remove_altitude(ne, h, data.area_info);
 data.T = T; data.t = guisdap_tosecs(T);
@@ -50,6 +60,7 @@ function [mat_files] = get_mat_files(path)
 %GET_MAT_FILES Function to concatenated files from more 
 %than one directory
 
+<<<<<<< HEAD
 
 end
 
@@ -76,13 +87,18 @@ function [ne, h, T] = read_matfiles(path, data)
 %h : (ground) altitude
 %T : time of measurement
 
+=======
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 mat_files = [];
 for i=1:length(path)
     mat_files = cat(1,mat_files,dir(path(i)));
 end
+<<<<<<< HEAD
 [h,t,ne,Te,Ti,vi,dne,dTe,dTi,dvi,az,el,T] = ...
     guisdap_param2cell2regular(mat_files,...
     [data.area_info.time(1,:); data.area_info.time(2,:)]);
+=======
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 end
 
 function [area_info] = get_area_info(inputArea, para_class, HR)
@@ -137,5 +153,9 @@ bool_altitude = h < area_info.altitude(1) |...
 h(bool_altitude) = [];      % delete all that doesn't match the boolian
 ne(bool_altitude,:) = [];   % delete all that doesn't match the boolian
 altitude = h; nel = ne;     % create output variable
+<<<<<<< HEAD
 end
 
+=======
+end
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b

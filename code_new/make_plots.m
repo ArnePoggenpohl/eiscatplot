@@ -197,7 +197,11 @@ for i=1:length(x_label)
     xlabel(x_label(i));
     ylabel(y_label(i));
     text(8.9,12.8,get_date_string(data),'FontSize',7);
+<<<<<<< HEAD
     grid on
+=======
+    grid('on','LineWidth',0.5)
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
     ax = gca; ax.FontSize = 9;
     
     safe_plot(f, "scatter" + "_" + f_title(i), data);
@@ -231,7 +235,11 @@ for i=1:length(x_label)
     xlabel(x_label(i));
     ylabel(y_label(i));
     text(8.9,12.8,get_date_string(data),'FontSize',7);
+<<<<<<< HEAD
     grid on
+=======
+    grid('on','LineWidth',0.5)
+>>>>>>> 83c167024b58da016175cec66ccf500c2668368b
     ax = gca; ax.FontSize = 9;
 end
 safe_plot(f, "scatter_all", data);
