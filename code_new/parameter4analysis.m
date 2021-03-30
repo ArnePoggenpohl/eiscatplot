@@ -4,42 +4,20 @@ function [data] = parameter4analysis(inputDay, inputArea, HR)
 
 class_name = get_class_name(inputDay, HR);  % get class name from input day
 para_class = eval(class_name);              % initialise class with paramters
-<<<<<<< HEAD
-=======
-files = get_mat_files(para_class.Path);     % get directory of all files
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 
 data.area_info = get_area_info(inputArea, para_class, HR);
 data.area_info.day = inputDay;
 data.area_info.area = inputArea;
 
-<<<<<<< HEAD
-
 if isprop(para_class, 'Path_hdf5')
-    "true"
-    [ne, h, T] = read_hdf5(para_class.Path_hdf5);
+    [ne, h, T] = read_hdf5(para_class.Path_hdf5, data);
 else
-    "false"
     [ne, h, T] = read_matfiles(para_class.Path, data);
-
-    %files = get_mat_files(para_class.Path);     % get directory of all files
-    %[h,t,ne,Te,Ti,vi,dne,dTe,dTi,dvi,az,el,T] = ...
-    %    guisdap_param2cell2regular(files,...
-    %    [data.area_info.time(1,:); data.area_info.time(2,:)]);
 end
-ne
-h
-unique(h)
-T
-unique(T)
-=======
-[h,t,ne,Te,Ti,vi,dne,dTe,dTi,dvi,az,el,T] = ...
-    guisdap_param2cell2regular(files,...
-    [data.area_info.time(1,:); data.area_info.time(2,:)]);
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 
 [data.nel, data.altitude] = remove_altitude(ne, h, data.area_info);
-data.T = T; data.t = guisdap_tosecs(T);
+data.T = T; 
+data.t = guisdap_tosecs(T);
 end
 
 function [c_name] = get_class_name(inputDay, HR)
@@ -56,15 +34,7 @@ else
 end
 end
 
-function [mat_files] = get_mat_files(path)
-%GET_MAT_FILES Function to concatenated files from more 
-%than one directory
-
-<<<<<<< HEAD
-
-end
-
-function [ne, h, T] = read_hdf5(path)
+function [ne, h, T] = read_hdf5(path, data)
 %READ_HDF5 Function to read data saved in hdf5 format
 %ne : equivalent electron density
 %h : (ground) altitude
@@ -74,10 +44,82 @@ for i_path=1:length(path)
     hdf5_data = h5read(path(i_path),'/Data/Table Layout');
     ne = [ne; hdf5_data.nel];
     h = [h; hdf5_data.gdalt];
-    Time = [hdf5_data.year hdf5_data.month hdf5_data.day...
-            hdf5_data.hour hdf5_data.min hdf5_data.sec];
+    Time = double([hdf5_data.year hdf5_data.month hdf5_data.day...
+            hdf5_data.hour hdf5_data.min hdf5_data.sec]);
+    %Time = unique(Time,'rows');
     T = [T; Time];
 end
+
+% make the vectors ne, h and t to a matrix
+ne_mat = [];
+h_mat = [];
+t_mat = {};
+j = 1;
+k = 1;
+for i_h=1:length(h)-1   % one value will be left out, but the important part (80-110km) is included
+    ne_mat(j,k) = ne(i_h);
+    h_mat(j,k) = h(i_h);
+    t_mat{j,k} = T(i_h,:);
+    j = j + 1;
+    if h(i_h) > h(i_h + 1)  % h is compared, due to the fact how the data is taken
+        k = k + 1;
+        j = 1;
+    end
+end
+
+ne_mat(ne_mat==0) = NaN;    % ne has NaNs and zeros. Now it has only NaNs.
+
+
+col_to_delete = [];
+for i_col=1:size(ne_mat,2)
+    if isnan(ne_mat(:,i_col))
+        col_to_delete = [col_to_delete i_col];
+    end
+end
+
+row_to_delete = [];
+for i_row=1:size(ne_mat,1)
+    if isnan(ne_mat(i_row,:))
+        row_to_delete = [row_to_delete i_row];
+    end
+end
+
+ne_mat(:,col_to_delete) = [];
+ne_mat(row_to_delete,:) = [];
+
+h_mat(:,col_to_delete) = [];
+h_mat(row_to_delete,:) = [];
+
+t_mat(:,col_to_delete) = [];
+t_mat(row_to_delete,:) = [];
+
+
+ne = ne_mat;
+h = mean(h_mat,2);  % build the mean, because the altitude changes slightly in each measurement,
+                    % which leads to problems when plotting
+T = cell2mat(t_mat(1,:)');  % always take the first time
+t = guisdap_tosecs(T);
+
+if size(T,1) ~= size(ne,2)
+    error('The length of the time-vector %i does not fit to the length of the ne-matrix %i',...
+        size(T,1), size(ne,2))
+end
+if max(std(h(h>80 & h<110,:),0,2)) > 0.1
+    warning('The standard deviation of the altitude between 80 and 110 km is high (%f). Check the h-matrix for unusuallity.',...
+        max(std(h(h>80 & h<110,:),0,2)))
+end
+
+% remove all data, which are laying outside of the wanted interval time
+t_low = guisdap_tosecs(data.area_info.time(1,:));
+t_up = guisdap_tosecs(data.area_info.time(2,:));
+T = T(t>=t_low & t<=t_up,:);
+ne = ne(:,t>=t_low & t<=t_up);
+
+if min(diff(guisdap_tosecs(T))) == 0
+    warning('One time step includes two columns of data.')
+end
+
+ne = 10.^ne;
 end
 
 function [ne, h, T] = read_matfiles(path, data)
@@ -87,18 +129,14 @@ function [ne, h, T] = read_matfiles(path, data)
 %h : (ground) altitude
 %T : time of measurement
 
-=======
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 mat_files = [];
 for i=1:length(path)
     mat_files = cat(1,mat_files,dir(path(i)));
 end
-<<<<<<< HEAD
+
 [h,t,ne,Te,Ti,vi,dne,dTe,dTi,dvi,az,el,T] = ...
     guisdap_param2cell2regular(mat_files,...
     [data.area_info.time(1,:); data.area_info.time(2,:)]);
-=======
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
 end
 
 function [area_info] = get_area_info(inputArea, para_class, HR)
@@ -153,9 +191,4 @@ bool_altitude = h < area_info.altitude(1) |...
 h(bool_altitude) = [];      % delete all that doesn't match the boolian
 ne(bool_altitude,:) = [];   % delete all that doesn't match the boolian
 altitude = h; nel = ne;     % create output variable
-<<<<<<< HEAD
 end
-
-=======
-end
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
