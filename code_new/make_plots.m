@@ -37,8 +37,7 @@ function overview_plot(data, parameter)
 %OVERVIEW_PLOT Creates the 'map-like' overview of the area.
 
 [time, nel] = overview_time_preparation(data);  % mostly to insert gaps where data is missing
-indicies = nel < parameter.max_nel;             % delete the nel values below the limit for the plot
-nel(indicies) = NaN;
+nel(nel < parameter.max_nel) = NaN;             % delete the nel values below the limit for the plot
 
 f=figure('visible','off','units','centimeters','position',[0,0,19,8],'PaperSize',[19,8]);
 colormap(guisdap_myb(200,1));  % EISCAT colormap
@@ -197,11 +196,7 @@ for i=1:length(x_label)
     xlabel(x_label(i));
     ylabel(y_label(i));
     text(8.9,12.8,get_date_string(data),'FontSize',7);
-<<<<<<< HEAD
     grid on
-=======
-    grid('on','LineWidth',0.5)
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
     ax = gca; ax.FontSize = 9;
     
     safe_plot(f, "scatter" + "_" + f_title(i), data);
@@ -235,11 +230,7 @@ for i=1:length(x_label)
     xlabel(x_label(i));
     ylabel(y_label(i));
     text(8.9,12.8,get_date_string(data),'FontSize',7);
-<<<<<<< HEAD
     grid on
-=======
-    grid('on','LineWidth',0.5)
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
     ax = gca; ax.FontSize = 9;
 end
 safe_plot(f, "scatter_all", data);
