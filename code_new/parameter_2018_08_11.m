@@ -17,8 +17,8 @@ classdef parameter_2018_08_11
     
     properties
         % General
-        Path_hdf5 = ["..\data\NCAR_2018-08-11_manda_24_vhf.bin.hdf5",...
-                     "..\data\NCAR_2018-08-12_manda_24_vhf.bin.hdf5"]
+        Path_hdf5 = ["../../data/NCAR_2018-08-11_manda_24_vhf.bin.hdf5",...
+                     "../../data/NCAR_2018-08-12_manda_24_vhf.bin.hdf5"]
         Path = ["..\data\2018-08-11_manda_24@vhf\*.mat",...
                 "..\data\2018-08-12_manda_24@vhf\*.mat"]
         Heater = [2018 08 11 20 32 00; 2018 08 12 02 00 00]

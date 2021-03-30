@@ -16,11 +16,7 @@ classdef parameter_2018_08_15_HR
     
     properties
         % General
-<<<<<<< HEAD
         Path = "../../data/2018-08-15_manda_4.8@vhf/*.mat"
-=======
-        Path = "../data/2018-08-15_manda_4.8@vhf/*.mat"
->>>>>>> 83c167024b58da016175cec66ccf500c2668368b
         Heater = [2018 08 15 20 06 00; 2018 08 16 01 56 00]
         Heater_int = [48, 168]
         % Complete signal
