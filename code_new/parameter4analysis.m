@@ -17,7 +17,7 @@ end
 
 [data.nel, data.altitude] = remove_altitude(ne, h, data.area_info);
 data.T = T; 
-data.t = guisdap_tosecs(T);
+data.t = tosecs(T);
 end
 
 function [c_name] = get_class_name(inputDay, HR)
@@ -39,6 +39,8 @@ function [ne, h, T] = read_hdf5(path, data)
 %ne : equivalent electron density
 %h : (ground) altitude
 %T : time of measurement
+tic
+
 ne = []; h = []; T = [];
 for i_path=1:length(path)
     hdf5_data = h5read(path(i_path),'/Data/Table Layout');
@@ -98,7 +100,7 @@ ne = ne_mat;
 h = mean(h_mat,2);  % build the mean, because the altitude changes slightly in each measurement,
                     % which leads to problems when plotting
 T = cell2mat(t_mat(1,:)');  % always take the first time
-t = guisdap_tosecs(T);
+t = tosecs(T);
 
 if size(T,1) ~= size(ne,2)
     error('The length of the time-vector %i does not fit to the length of the ne-matrix %i',...
@@ -110,12 +112,12 @@ if max(std(h(h>80 & h<110,:),0,2)) > 0.1
 end
 
 % remove all data, which are laying outside of the wanted interval time
-t_low = guisdap_tosecs(data.area_info.time(1,:));
-t_up = guisdap_tosecs(data.area_info.time(2,:));
+t_low = tosecs(data.area_info.time(1,:));
+t_up = tosecs(data.area_info.time(2,:));
 T = T(t>=t_low & t<=t_up,:);
 ne = ne(:,t>=t_low & t<=t_up);
 
-if min(diff(guisdap_tosecs(T))) == 0
+if min(diff(tosecs(T))) == 0
     warning('One time step includes two columns of data.')
 end
 

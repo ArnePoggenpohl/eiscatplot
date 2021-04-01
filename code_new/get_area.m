@@ -28,7 +28,7 @@ if inArea == "all"
         for j=0:99                                  % for up to 100 areas
             info_number = "para_class.Time" + j;    % could also use "para_class.Altitude"
             try
-                void = eval(info_number);           % no evaluation -> catch -> no area assignment
+                eval(info_number);           % no evaluation -> catch -> no area assignment
                 if j == 0
                     area(i,j+1) = "complete";
                 else

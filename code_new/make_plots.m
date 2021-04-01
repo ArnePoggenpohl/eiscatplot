@@ -40,7 +40,7 @@ function overview_plot(data, parameter)
 nel(nel < parameter.max_nel) = NaN;             % delete the nel values below the limit for the plot
 
 f=figure('visible','off','units','centimeters','position',[0,0,19,8],'PaperSize',[19,8]);
-colormap(guisdap_myb(200,1));  % EISCAT colormap
+colormap(myb(200,1));  % EISCAT colormap
 pcolor(time, data.altitude, log10(nel)), shading flat;  % -12 seconds so the data is centered over the time measurement and not shifted
 hold on
 if parameter.heater_lines == "on"
@@ -63,10 +63,10 @@ if parameter.title == "on"
     else
         inputArea = char(data.area_info.area);
         area_num = inputArea(end);
-        heater_num_start = (guisdap_tosecs(data.area_info.time(1,:))...
-            - guisdap_tosecs(data.area_info.heater(1,:))) / sum(data.area_info.heater_int);
-        heater_num_end = (guisdap_tosecs(data.area_info.time(2,:))...
-            - guisdap_tosecs(data.area_info.heater(1,:))) / sum(data.area_info.heater_int);
+        heater_num_start = (tosecs(data.area_info.time(1,:))...
+            - tosecs(data.area_info.heater(1,:))) / sum(data.area_info.heater_int);
+        heater_num_end = (tosecs(data.area_info.time(2,:))...
+            - tosecs(data.area_info.heater(1,:))) / sum(data.area_info.heater_int);
         heater_num_start = ceil(heater_num_start+1);
         heater_num_end = floor(heater_num_end);
         if heater_num_start <= 1
@@ -85,9 +85,9 @@ if data.area_info.area == "complete" & parameter.rectangle == "on"
 end
 
 xlim_start = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-    seconds(guisdap_tosecs(data.area_info.time(1,:)));
+    seconds(tosecs(data.area_info.time(1,:)));
 xlim_stop = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-    seconds(guisdap_tosecs(data.area_info.time(2,:)));
+    seconds(tosecs(data.area_info.time(2,:)));
 xlim([xlim_start xlim_stop])
 xtickformat('HH:mm:ss');
 
@@ -245,7 +245,7 @@ function detail_nel_plot(data, parameter)
 
 for i=1:size(data.nel,1)-1      % -1, because the highest altitude cannot be seen in the overview figure
     f=figure('visible','off','units','centimeters','position',[0,0,19,6],'PaperSize',[19,6]);
-    colormap(guisdap_myb(200,1));  % EISCAT colormap
+    colormap(myb(200,1));  % EISCAT colormap
     y = log10(nel(i,:));
     mask = y <= log10(parameter.nel_min);
     y(mask) = [];
@@ -266,9 +266,9 @@ for i=1:size(data.nel,1)-1      % -1, because the highest altitude cannot be see
     sz = 60/log(length(data.t));
     scatter(x,y,sz,y,'filled','MarkerEdgeColor','k','HandleVisibility','off');
     xlim_start = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-        seconds(guisdap_tosecs(data.area_info.time(1,:)));
+        seconds(tosecs(data.area_info.time(1,:)));
     xlim_stop = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-        seconds(guisdap_tosecs(data.area_info.time(2,:)));
+        seconds(tosecs(data.area_info.time(2,:)));
     xlim([xlim_start xlim_stop]);
     xtickformat('HH:mm:ss');
     %ylim([min(log10(nel),[],'all','omitnan')-0.2 max(log10(nel),[],'all','omitnan')+1]);
@@ -301,7 +301,7 @@ if isnumeric(parameter.nel_tiled)
     t=tiledlayout(size(tiled,2),1);
     for i=1:size(tiled,2)
         ax = nexttile;
-        colormap(guisdap_myb(200,1));  % EISCAT colormap
+        colormap(myb(200,1));  % EISCAT colormap
         y = log10(nel(tiled(i),:));
         mask = y <= log10(parameter.nel_min);
         y(mask) = [];
@@ -319,9 +319,9 @@ if isnumeric(parameter.nel_tiled)
         sz = 60/log(length(data.t));
         scatter(x,y,sz,y,'filled','MarkerEdgeColor','k','HandleVisibility','off');
         xlim_start = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-            seconds(guisdap_tosecs(data.area_info.time(1,:)));
+            seconds(tosecs(data.area_info.time(1,:)));
         xlim_stop = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-            seconds(guisdap_tosecs(data.area_info.time(2,:)));
+            seconds(tosecs(data.area_info.time(2,:)));
         xlim([xlim_start xlim_stop]);
         xtickformat('HH:mm:ss');
         if i==size(tiled,2)
@@ -358,9 +358,9 @@ function temperature_plot(data, parameter)
 %the area. The calculation is based on the values of R0 and R1
 
 [T_ehot, x] = calc_temperature(data);
-%x = guisdap_tosecs(data.area_info.heater(1,:)):...
-%    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
-%x = x(x >= guisdap_tosecs(data.area_info.time(1,:)) & x <= guisdap_tosecs(data.area_info.time(2,:)));
+%x = tosecs(data.area_info.heater(1,:)):...
+%    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
+%x = x(x >= tosecs(data.area_info.time(1,:)) & x <= tosecs(data.area_info.time(2,:)));
 x = datetime(str2double(data.area_info.day(1:4)),1,1) + seconds(x);
 x = x(1:size(T_ehot,2));
 y = data.altitude;
@@ -393,9 +393,9 @@ if parameter.title == "on"
     title("Calculated temperature in " + area_num);
 end
 xlim_start = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-    seconds(guisdap_tosecs(data.area_info.time(1,:)));
+    seconds(tosecs(data.area_info.time(1,:)));
 xlim_stop = datetime(str2double(data.area_info.day(1:4)),1,1) +...
-    seconds(guisdap_tosecs(data.area_info.time(2,:)));
+    seconds(tosecs(data.area_info.time(2,:)));
 xlim([xlim_start xlim_stop])
 xtickformat('HH:mm:ss');
 if max(T_ehot,[],'all','omitnan') > 800
@@ -603,10 +603,10 @@ function [line1, line2] = overview_heater(data)
 
 lower_gap = 0.15;
 
-heater_on_s = guisdap_tosecs(data.area_info.heater(1,:)):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
-heater_off_s = guisdap_tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
+heater_on_s = tosecs(data.area_info.heater(1,:)):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
+heater_off_s = tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
 
 heater_on_alt_start = repmat(data.area_info.altitude(1)-...
     lower_gap*diff(data.area_info.altitude)-1,1,length(heater_on_s));
@@ -647,7 +647,7 @@ y = zeros(size(data.area_info.all_altitudes,1,2));
 % fill them with data
 for i=1:size(data.area_info.all_times,1)
     for j=1:size(data.area_info.all_times,2)
-        x(i,j) = guisdap_tosecs(data.area_info.all_times(i,j,:));
+        x(i,j) = tosecs(data.area_info.all_times(i,j,:));
     end
 end
 for i=1:size(data.area_info.all_altitudes,1)
@@ -679,10 +679,10 @@ function [line1, line2] = detail_nel_heater(data)
 %DETAIL_NEL_HEATER Function to display heater lines. Returns the line
 %so they can be labeled
 
-heater_on_s = guisdap_tosecs(data.area_info.heater(1,:)):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
-heater_off_s = guisdap_tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
+heater_on_s = tosecs(data.area_info.heater(1,:)):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
+heater_off_s = tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
 
 heater_on_start = repmat(min(log10(data.nel),[],'all','omitnan')-5,1,length(heater_on_s));
 heater_on_stop = repmat(max(log10(data.nel),[],'all','omitnan')+5,1,length(heater_on_s));
@@ -719,8 +719,8 @@ function [line] = temperature_heater(data)
 
 lower_gap = 0.15;
 
-heater_on_s = guisdap_tosecs(data.area_info.heater(1,:)):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
+heater_on_s = tosecs(data.area_info.heater(1,:)):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
 
 heater_on_alt_start = repmat(data.area_info.altitude(1)-...
     lower_gap*diff(data.area_info.altitude)-1,1,length(heater_on_s));
@@ -748,10 +748,10 @@ function [R0, R1, R2, R3, R4] = get_Rs(data)
 %GET_RS Function to get the values needed to build the ratios
 %Needed for histograms and compare plots
 
-heater_on_s = guisdap_tosecs(data.area_info.heater(1,:)):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
-heater_off_s = guisdap_tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
-    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
+heater_on_s = tosecs(data.area_info.heater(1,:)):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
+heater_off_s = tosecs(data.area_info.heater(1,:)) + data.area_info.heater_int(1):...
+    sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:));
 heater_on_s = heater_on_s(heater_on_s > data.t(1) & heater_on_s < data.t(end));
 heater_off_s = heater_off_s(heater_off_s > data.t(1) & heater_off_s < data.t(end));
 
@@ -800,45 +800,19 @@ date_str = datestr(data.T(1,:), 'dd mmm yyyy') +...
     "; " + data.area_info.area;
 end
 
-function [h] = detail_nel_fit(x, y)
-%DETAIL_NEL_FIT function to fit a smooth line through the nel plot
-
-x = x - x(1);
-x = seconds(x);
-
-[xData, yData] = prepareCurveData(x, y.');
-ft = fittype('poly9');
-[fitresult, gof] = fit(xData, yData, ft);
-fitresult
-gof
-h = plot(fitresult, x, yData);
-end
-
 function [T_ehot, heater_on_s] = calc_temperature(data)
 %CALC_TEMPRATURE is a function to calculate the temperature based on the
 %ratio R0 and R1
 
 T_i=135;    % ~average temperature
 %T_i=[141.5 139.5 137.5 136 134.5 132.5 131];        % temperature in lower atmosphere was higher
-%T_i=repmat(T_i,size(R1R0,1),1);
-
-%heater_on_s = guisdap_tosecs(data.area_info.heater(1,:)):...
-%    sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:));
-
-%heater_on_s = flip(cat(2,flip(heater_on_s),...
-%    guisdap_tosecs(data.area_info.heater(1,:))-sum(data.area_info.heater_int):...
-%    -sum(data.area_info.heater_int):data.t(1)));
-
-%heater_on_s = heater_on_s(heater_on_s > data.t(1) & heater_on_s < data.t(end));
 
 heater_on_s = cat(2, ...
-    flip(guisdap_tosecs(data.area_info.heater(1,:))-sum(data.area_info.heater_int):-sum(data.area_info.heater_int):data.t(1)),...
-    guisdap_tosecs(data.area_info.heater(1,:)):sum(data.area_info.heater_int):guisdap_tosecs(data.area_info.heater(2,:)),...
-    guisdap_tosecs(data.area_info.heater(2,:))+sum(data.area_info.heater_int):sum(data.area_info.heater_int):data.t(end));
+    flip(tosecs(data.area_info.heater(1,:))-sum(data.area_info.heater_int):-sum(data.area_info.heater_int):data.t(1)),...
+    tosecs(data.area_info.heater(1,:)):sum(data.area_info.heater_int):tosecs(data.area_info.heater(2,:)),...
+    tosecs(data.area_info.heater(2,:))+sum(data.area_info.heater_int):sum(data.area_info.heater_int):data.t(end));
 
 heater_on_s = heater_on_s(heater_on_s > data.t(1) & heater_on_s < data.t(end));
-
-%datetime(str2double(data.area_info.day(1:4)),1,1) + seconds(heater_on_s)
 
 for i=1:length(heater_on_s)     % get the indices where the heater is turned on
     [diff,idx] = min(abs(data.t - heater_on_s(i)));
