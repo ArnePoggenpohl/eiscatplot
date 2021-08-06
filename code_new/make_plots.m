@@ -119,7 +119,7 @@ for i=1:size(ratios,3)
     f=figure('visible','off','units','centimeters','position',[0,0,9,7],'PaperSize',[9,7]);
     ratio = ratios(:,:,i);
     ratio = ratio(R0 > parameter.min_signal);
-    ratio = ratio(ratio>0.01);  % >0.01: outliers, no physical sense (el. dens. would have to change 2 magnitutes in 24 seconds)
+    % ratio = ratio(ratio>0.01);  % >0.01: outliers, no physical sense (el. dens. would have to change 2 magnitutes in 24 seconds)
     histogram(ratio(~isnan(ratio)),0:0.1:3,'Normalization','probability')
     hold on
     xline(1,'LineWidth', 1.5,'Color', 'r');
@@ -130,13 +130,13 @@ for i=1:size(ratios,3)
         xline(M,'LineWidth', 1.5,'Color', 'g');
     end
     xlim([0 3]);
-    ylim([0 0.3]);
+    ylim([0 0.4]);
     yticklabels(yticks*100);
-    text(0.67,0.26,strcat(sprintf('%2.0f',sum(ratio<1,'all')/sum(ratio>0,'all')*100),' \%'),'FontSize',9);
-    text(1.05,0.26,strcat(sprintf('%2.0f',(1-sum(ratio<1,'all')/sum(ratio>0,'all'))*100),' \%'),'FontSize',9);
-    text(M+0.015,0.21, sprintf('$<$%.2f$>$', M),'FontSize',9);
-    %text(M+0.015,0.21, sprintf('$\overline{%.2f}$', M),'FontSize',9);
-    text(1.9,0.26,get_date_string(data),'FontSize',7);
+    text(0.67,0.36,strcat(sprintf('%2.0f',sum(ratio<1,'all')/sum(ratio>0,'all')*100),' \%'),'FontSize',9);
+    text(1.05,0.36,strcat(sprintf('%2.0f',(1-sum(ratio<1,'all')/sum(ratio>0,'all'))*100),' \%'),'FontSize',9);
+    text(M+0.015,0.31, sprintf('$<$%.2f$>$', M),'FontSize',9);
+    %text(M+0.015,0.31, sprintf('$\overline{%.2f}$', M),'FontSize',9);
+    text(1.9,0.36,get_date_string(data),'FontSize',7);
     xlabel(x_label(i));
     ylabel('Number per 100 events');
     if parameter.title == "on"

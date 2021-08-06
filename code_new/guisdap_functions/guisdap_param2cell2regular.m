@@ -72,7 +72,7 @@ if nargin > 1 && ~isempty(time_limits)
   StrMat_w_t = char({mat_files.name});
   StrMat_w_t = StrMat_w_t(:,1:end-4);  
   data_times = str2num(StrMat_w_t);
-  [t_start_stop] = guisdap_tosecs(time_limits);
+  [t_start_stop] = tosecs(time_limits);
   idxInRange = [];
   for iR = 1:2:length(t_start_stop),
     idxInRange = [idxInRange(:);find(t_start_stop(iR)<=data_times & data_times <= t_start_stop(iR+1))];

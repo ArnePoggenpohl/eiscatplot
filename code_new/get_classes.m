@@ -5,8 +5,7 @@ function [day, area, HR] = get_classes(inDay, inArea, inHR)
 
 if inDay == "all"
     area = "all";
-    
-    classes = dir('parameter_*');
+    classes = dir('**/parameter_*');
     for i=1:length(classes)
         name = classes(i).name;
         name = name(11:end-2);

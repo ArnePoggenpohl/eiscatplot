@@ -24,11 +24,11 @@ if inArea == "all"
                     Day(1:4) + "_" + Day(6:7) + "_" + Day(9:10) + "_HR" + "' exists.")
             end
         end
-        para_class = eval(c_name);
+        para_class = eval(c_name);                  % NOT UNUSED! it is evaluated in eval(info_number)
         for j=0:99                                  % for up to 100 areas
-            info_number = "para_class.Time" + j;    % could also use "para_class.Altitude"
+            info_number = "para_class.Time" + j;    % create string to check for existance, could also use "para_class.Altitude"
             try
-                eval(info_number);           % no evaluation -> catch -> no area assignment
+                dummy = eval(info_number);          % no evaluation -> catch -> no area assignment
                 if j == 0
                     area(i,j+1) = "complete";
                 else
