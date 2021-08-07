@@ -24,8 +24,8 @@ buy or is provided by your organisation.
 ### Data
 Then you will need data from the EISCAT radar. Go to 
 
-* `https://portal.eiscat.se/madrigal/` and select
-* `Simple Local Data Access` from the list on the left side.
+* `https://madrigal.eiscat.se/madrigal/index.html` and select
+* `Access Data` from the top bar and then `Select single experiment`. Fill out the short form then you can access the data.
 
 An example of the data, which was analysed with this code:
 
